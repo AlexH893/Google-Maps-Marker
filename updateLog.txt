@@ -1,0 +1,10 @@
+update log
+
+10/23 DB reset / kirkville + cedar pokestops added
+10/24 DB reset / Halloween event quests added
+10/25 DB reset / UI tweaks
+10/26 DB reset / Map canvas tweaks
+10/27 DB reset / added missing quest
+10/28 DB reset
+10/29 DB reset / quest selection interface cleanup
+10/30 DB reset
