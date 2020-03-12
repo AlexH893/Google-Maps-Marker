@@ -1,5 +1,5 @@
 <?php
 $username="root";
-$password="lolirl1";
+$password="";
 $database="test";
 ?>

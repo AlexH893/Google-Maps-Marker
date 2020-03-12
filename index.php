@@ -3,9 +3,9 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <title>Osky Quest Map</title>
+    <title>Osky PokeStop Map</title>
     <style>
-        /* Always set the map height explicitly to define the size of the div
+        /* Set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
         height: 90%;
@@ -23,16 +23,13 @@
 <body>
     <?php include 'date.php';  ?>
 
-
-    <br> Latest update 10/28: Database reset and Halloween event quests added
+    <br> Latest update 3/11/2020 - Backend changes, code refactoring
 
     <div id="map" height="460px" width="100%"></div>
     <div id="form2">
         <table>
             <!-- <tr><td>Name:</td> </tr> 	-->
-            <!-- https://stackoverflow.com/questions/60174/how-can-i-prevent-sql-injection-in-php?rq=1 -->
             <label id="name" style="color: #0026ff"></label>
-
 
             <tr>
                 <td>questindicator:</td>
@@ -46,10 +43,8 @@
                         <option value="questMagmar">Placeholder</option>
                         <option value="questMagmar">Placeholder</option>
                         <option value="questMagmar">Placeholder</option>
-
                     </select> </td>
             </tr>
-
             <tr>
                 <td></td>
                 <td><input type='button' value='Save' onclick='saveLOCATION()' /></td>
@@ -58,7 +53,6 @@
     </div>
 
     <div id="map-canvas"></div>
-
 
     <script>
         $(document).ready(function() {
@@ -69,9 +63,9 @@
             });
         });
 
-
-
-
+        /** Custom labels that appear on the marker
+        *   Used to indicate the reward quickly at a glance
+        */
         document.getElementById("name").style.display = 'none';
         var customLabel = {
             Chansey: {
@@ -115,15 +109,12 @@
             }
         };
 
-
-
-
         //   var map;
         var marker;
         var infowindow;
         var messagewindow;
         var clickedMarker;
-        var hasQuest = false; //flag to identify which stops have a quest set, default to false
+        var hasQuest = false; // Flag to identify which stops have a quest set, default=false
         var oskaloosa = {
             lat: 41.2954,
             lng: -92.6444
@@ -135,8 +126,8 @@
          * This constructor takes the control DIV as an argument.
          * @constructor
          */
-        function CenterControl(controlDiv, map) {
-
+        function CenterControl(controlDiv, map) 
+        {
             // Set CSS for the control border.
             var controlUI = document.createElement('div');
             controlUI.style.backgroundColor = '#fff';
@@ -160,20 +151,14 @@
             controlText.innerHTML = 'Center Oskaloosa';
             controlUI.appendChild(controlText);
 
-            // Setup the click event listeners: simply set the map to Oskaloosa.
+            // Setup the click event listeners: positioning the map to Oskaloosa
             controlUI.addEventListener('click', function() {
                 map.setCenter(oskaloosa);
             });
-
         }
 
-
-
-        function initMap() {
-
-
-
-
+        function initMap() 
+        {
             var styledMapType = new google.maps.StyledMapType(
                 [{
                         "featureType": "poi",
@@ -205,12 +190,9 @@
                     name: 'Styled Map'
                 });
 
-
-
-
             var myCenter = new google.maps.LatLng(41.294798, -92.644675);
             // Create a map object, and include the MapTypeId to add
-            // to the map type control.
+            // to the map type control
 
             var map = new google.maps.Map(document.getElementById('map'), {
                     center: {
@@ -220,16 +202,11 @@
                     zoom: 18,
                     streetViewControl: false,
                     mapTypeControlOptions: {
-                        gestureHandling: 'greedy', //set to cooperative by default once menus are built	  
+                        gestureHandling: 'greedy', // Set to cooperative by default once menus are built	  
                         style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
                         mapTypeIds: ['roadmap', 'terrain']
                     }
-
                 }
-
-
-
-
             );
 
 
@@ -257,9 +234,6 @@
 
                 content: document.getElementById('message')
             });
-
-
-
 
             //Loading in markers from DB via call.php
             downloadUrl('call.php', function(data) {
@@ -1158,8 +1132,7 @@
 
         //  }
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOHlH9jPvY9UM927vRXqkcVkrXLJxZhMw&callback=initMap">
-        //https://maps.googleapis.com/maps/api/staticmap?key=YOUR_API_KEY&center=41.294881244714006,-92.6454313455352&zoom=16&format=png&maptype=roadmap&style=feature:poi%7Celement:labels.text%7Cvisibility:off&style=feature:poi.business%7Cvisibility:off&style=feature:road%7Celement:labels.icon%7Cvisibility:off&style=feature:transit%7Cvisibility:off&size=480x360
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD14XVl19iIKIMlJqVGR74fFHXhVm5A4Rc&callback=initMap">
     </script>
 
     <P>Map Legend: Letters on the markers indicate quest rewards<br>
