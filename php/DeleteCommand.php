@@ -88,8 +88,6 @@ $query2 = "INSERT INTO `markers` (`name`, `lat`, `lng`, `id`, `questTitle`, `que
 ('Kirkville Post Office', 41.1453, -92.5038, 88, '', NULL, NULL, NULL),
 ('Cedar United Methodist Church', 41.2122, -92.5256, 89, NULL, NULL, NULL, NULL),
 ('Cedar Post Office', 41.2128, -92.5246, 90, NULL, NULL, NULL, NULL)";
-
-
  
 $result2 = mysqli_query($con,$query2);
    echo "DB populated successfully";
