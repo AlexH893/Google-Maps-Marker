@@ -1,5 +1,4 @@
 <!DOCTYPE html >
-
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -22,15 +21,16 @@
     <script type="text/javascript" src="js/SaveData.js"></script>
     <script type="text/javascript" src="js/MarkedChecked.js"></script>
     <script type="text/javascript" src="js/QuestLogic.js"></script>
+    <script type="text/javascript" src="js/ShowText.js"></script>
+    <script type="text/javascript" src="js/AddMarker.js"></script>
 
 
 
 </head>
 
 <body>
-    <?php include 'date.php';  ?>
-
-    <br> Latest update 3/12/2020 - Backend changes, code refactoring/modularizin
+    <?php include 'php/date.php';  ?>
+    <br> Latest update 3/12/2020 - Backend changes, code refactoring/modularizing
 
     <div id="map" height="460px" width="100%"></div>
     <div id="form2">
@@ -61,9 +61,9 @@
 
     <div id="map-canvas"></div>
     <script>
+               var IsToggled = false;
         $(document).ready(function() {
             $("#button2").click("slow", function(event) {
-                // alert('test');
             });
         });
 
@@ -112,8 +112,6 @@
                 label: 'HW'
             }
         };
-
-        //   var map;
         var marker;
         var infowindow;
         var messagewindow;
@@ -124,9 +122,9 @@
             lng: -92.6444
         };
 
-//centermap function
         function initMap() 
         {
+
             var styledMapType = new google.maps.StyledMapType(
                 [{
                         "featureType": "poi",
@@ -177,7 +175,6 @@
                 }
             );
 
-
             // Create the DIV to hold the control and call the CenterControl()
             // constructor passing in this DIV.
             var centerControlDiv = document.createElement('div');
@@ -188,11 +185,20 @@
 
 
 
+            var AddMarkerControlDiv = document.createElement('div');
+            var addControl = new AddMarker(AddMarkerControlDiv, map);
+
+            AddMarkerControlDiv.index = 2;
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(AddMarkerControlDiv);
+
+
+
+
+
 
             //Associate the styled map with the MapTypeId and set it to display.
             map.mapTypes.set('styled_map', styledMapType);
             map.setMapTypeId('styled_map');
-
 
             infowindow = new google.maps.InfoWindow({
                 content: document.getElementById('form')
@@ -204,7 +210,9 @@
             });
 
             // Loading in markers from DB via call.php
-            downloadUrl('call.php', function(data) {
+            downloadUrl('php/call.php', function(data) {
+
+
                 var xml = data.responseXML;
                 var markers = xml.documentElement.getElementsByTagName('marker');
                 Array.prototype.forEach.call(markers, function(markerElem) {
@@ -297,22 +305,39 @@
 
                     }
                 }
+
+
+                // Add marker to canvas on mouse click - needs to be toggled with button click
+                google.maps.event.addListener(map, 'click', function(event) {
+                    if (IsToggled) {
+                   // alert("hello");
+                 marker = new google.maps.Marker({
+                   position: event.latLng,
+                   map: map
+                 });        
+
+                  marker.addListener('click', function() {
+                              infowindow.setContent(form2); 
+                     infowindow.open(map, marker);
+
+            });       }//istoggled    
+                     }); // End of function
+
+
+
+
+
+
+
+
+
+
+
+
             }); // End of downloadurl
 
 
-            // Add marker to canvas on mouse click - needs to be toggled with button click
-            //       google.maps.event.addListener(map, 'click', function(event) {
-            //     marker = new google.maps.Marker({
-            //       position: event.latLng,
-            //       map: map
-            //     });		
 
-            //      marker.addListener('click', function() {
-            //		          infowindow.setContent(form2); 
-            //          infowindow.open(map, marker);
-
-            //});			  
-            //         }); 
 
             // Try HTML5 geolocation -- this will center the user on their position upon loading of map
             if (navigator.geolocation) {
@@ -374,23 +399,18 @@
         //    });
         // }	 	  
 
-
         function doNothing() {}
-
-
-
 
         //  function bindInfoWindow(marker, map, infoWindow, html) {
         // google.maps.event.addListener(marker, 'click', function() {
         // infoWindow.setContent(content);
         //  infoWindow.open(map, marker);
-
-
         //  });
-
 
         //  }
     </script>
+
+    <!-- Google Map API Key -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD14XVl19iIKIMlJqVGR74fFHXhVm5A4Rc&callback=initMap">
     </script>
 
@@ -414,35 +434,7 @@
         <button id="yah" onclick="showText()">More Information</button>
         <p id="demo"></p>
 
-        <script>
-            function showText() {
-                document.getElementById("demo").innerHTML = "<p>FAQ <br><br>" +
-                    "How do I use this map?<br> <br>" +
-                    "<i>When you find a task with a good reward, locate the corresponding stop on the map (indicated by a google map marker) and use the dropdown menu to make the proper selection and click submit. Stops that you have visited or that aren't worth marking you can mark checked.</i> <br><br> Why doesn't this show all of the quests and rewards?<br><br>" +
-                    " <i>To speed up the process of submitting quests only rewards or quests that are worth hunting for are included in this map</i><br><br>" +
-
-                    "       Built with <br> HTML / JavaScript / AJAX / PHP / CSS <br> " +
-
-                    "     <b>Resources<br></b> " +
-                    '    <i>Google Maps JavaScript API <br> ' +
-                    'Stack Overflow <br> ' +
-                    'PokemonGoHub.net <br> ' +
-                    'The Silph Road <br> ' +
-                    'Latlong.net' +
-                    '</P></i>';
-            }
-        </script>
-
-
-
-
-
         </details>
-
-
         </div>
-
-
 </body>
-
 </html>

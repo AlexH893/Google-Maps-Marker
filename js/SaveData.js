@@ -10,8 +10,6 @@
                 var questReward;
                 var category;
 
-
-                //document.getElementById("rewardTitle").innerHTML = "Dratini Encounter";
                 if (rewardType.selectedIndex == 0) {
                     var questReward = "1500 stardust";
                     var category = "Stardust";
@@ -406,8 +404,6 @@
 
             var url = "phpsqlinfo_updaterow.php?questTitle=" + questTitle + "&category=" + category + "&questReward=" + questReward + "&id=" + id;
 
-
-
             downloadUrl(url, function(data, responseCode) {
 
                 if (responseCode == 200 && data.length <= 1) {
@@ -415,4 +411,4 @@
                     messagewindow.open(map, marker);
                 }
             });
-        } //end of save data
+        } // End of save data
