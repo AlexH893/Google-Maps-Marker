@@ -23,38 +23,39 @@
     <script type="text/javascript" src="js/QuestLogic.js"></script>
     <script type="text/javascript" src="js/ShowText.js"></script>
     <script type="text/javascript" src="js/AddMarker.js"></script>
-
-
+   
 
 </head>
 
 <body>
-    <?php include 'php/date.php';  ?>
+    <?php include 'date.php';  ?>
     <br> Latest update 3/12/2020 - Backend changes, code refactoring/modularizing
 
     <div id="map" height="460px" width="100%"></div>
     <div id="form2">
         <table>
-            <!-- <tr><td>Name:</td> </tr> 	-->
+            <!-- Form for adding a message in a custom marker -->
             <label id="name" style="color: #0026ff"></label>
-
             <tr>
-                <td>questindicator:</td>
-                <td><select id="questType" onchange="questLogic()">
-                        <option value="null">Select quest</option>
-                        <option value="questChansey">Hatch 5 eggs</option>
-                        <option value="questMagmar">Hatch 3 eggs</option>
-                        <option value="questMagmar">Placeholder</option>
-                        <option value="questMagmar">Placeholder</option>
-                        <option value="questMagmar">Placeholder</option>
-                        <option value="questMagmar">Placeholder</option>
-                        <option value="questMagmar">Placeholder</option>
-                        <option value="questMagmar">Placeholder</option>
-                    </select> </td>
+                <input type="text" id="name" name="name" placeholder="Enter a message"><br>
             </tr>
             <tr>
                 <td></td>
-                <td><input type='button' value='Save' onclick='saveLOCATION()' /></td>
+                <td><input type='button' value='Save' onclick='SaveLocation()' /></td>
+            </tr>
+        </table>
+    </div>
+
+        <div id="form3">
+        <table>
+            <!-- Form that appears when clicking a custom marker -->
+            <label id="name" style="color: #0026ff"></label>
+            <tr>
+                <input type="text" id="name" name="name" placeholder="Enter a message"><br>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type='button' value='Save' onclick='SaveLocation()' /></td>
             </tr>
         </table>
     </div>
@@ -113,6 +114,7 @@
             }
         };
         var marker;
+        var marker2;        
         var infowindow;
         var messagewindow;
         var clickedMarker;
@@ -183,16 +185,12 @@
             centerControlDiv.index = 1;
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
-
-
+            // Control for button to toggle marker adding
             var AddMarkerControlDiv = document.createElement('div');
             var addControl = new AddMarker(AddMarkerControlDiv, map);
 
             AddMarkerControlDiv.index = 2;
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(AddMarkerControlDiv);
-
-
-
 
 
 
@@ -209,8 +207,9 @@
                 content: document.getElementById('message')
             });
 
+
             // Loading in markers from DB via call.php
-            downloadUrl('php/call.php', function(data) {
+            downloadUrl('call.php', function(data) {
 
 
                 var xml = data.responseXML;
@@ -226,6 +225,7 @@
                     var id = markerElem.getAttribute('id');
                     var category = markerElem.getAttribute('category');
                     var date_submitted = markerElem.getAttribute('date_submitted');
+                     var message = markerElem.getAttribute('message');                   
 
                     var content = '<b>' + name + '</b><br>' + "Time submitted: " + date_submitted + " " + '<br>' + "Current quest:" + " " + '<label id="questTitle">' + questTitle + '</label>' + '<br>' + "Current Reward: " + '<label id="rewardTitle">' + '<b>' + questReward + '</b>' + '<br>' + '<select id="questType" onchange="questLogic()" style="width:100%;max-width:90%;">' +
                         '<option value="null">Select quest</option>' + '<br>' +
@@ -306,38 +306,22 @@
                     }
                 }
 
-
                 // Add marker to canvas on mouse click - needs to be toggled with button click
                 google.maps.event.addListener(map, 'click', function(event) {
                     if (IsToggled) {
-                   // alert("hello");
-                 marker = new google.maps.Marker({
-                   position: event.latLng,
-                   map: map
-                 });        
+                        marker = new google.maps.Marker({
+                            position: event.latLng,
+                            map: map
+                        });
 
-                  marker.addListener('click', function() {
-                              infowindow.setContent(form2); 
-                     infowindow.open(map, marker);
-
-            });       }//istoggled    
-                     }); // End of function
-
-
-
-
-
-
-
-
-
-
-
+                        marker.addListener('click', function() {
+                            infowindow.setContent(form2);
+                            infowindow.open(map, marker);
+                        });
+                    }
+                });// End of function
 
             }); // End of downloadurl
-
-
-
 
             // Try HTML5 geolocation -- this will center the user on their position upon loading of map
             if (navigator.geolocation) {
@@ -385,19 +369,18 @@
             request.send(null);
         }
 
-        //  function saveLOCATION() { //USED FOR ADDING MARKERS TO CANVAS 
-        //       var latlng = marker.getPosition();
-        //    var url = 'phpsqlinfo_addrow.php?name=' + name + '&questTitle=' + 'default' + '&lat=' + latlng.lat() + '&lng=' + latlng.lng();
+function SaveLocation() { //USED FOR ADDING MARKERS TO CANVAS 
+    var latlng = marker.getPosition();
+    var url = 'phpsqlinfo_addrow.php?name=' + name + '&questTitle=' + 'default' + '&lat=' + latlng.lat() + '&lng=' + latlng.lng() + '&message=' + message;
 
+    downloadUrl(url, function(data, responseCode) {
 
-        //    downloadUrl(url, function(data, responseCode) {
-
-        //     if (responseCode == 200 && data.length <= 1) {
-        //       infowindow.close();
-        //       messagewindow.open(map, marker);
-        //      }
-        //    });
-        // }	 	  
+        if (responseCode == 200 && data.length <= 1) {
+            infowindow.close();
+            messagewindow.open(map, marker);
+        }
+    });
+}	  
 
         function doNothing() {}
 
