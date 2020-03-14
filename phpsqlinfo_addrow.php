@@ -5,7 +5,8 @@ include("connect.php");
 $name = $_GET['name'];
 $lat = $_GET['lat'];
 $lng = $_GET['lng'];
-$message = $_GET['message'];
+$category = $_GET['category'];
+$date_submitted = $_GET['date_submitted'];
 
 $con=mysqli_connect ("localhost", $username, $password);
 if (!$con) {
@@ -20,12 +21,13 @@ if (!$db_selected) {
 
 // Inserts new row with place data.
 $query = sprintf("INSERT INTO markers " .
-         " (name, lat, lng, message) " .
-         " VALUES ('%s', '%s', '%s', '%s');",
+         "(name, lat, lng, category, date_submitted)" .
+         " VALUES ('%s', '%s', '%s', '%s', '%s');",
          mysqli_real_escape_string($con, $name),
-         mysqli_real_escape_string($con, $lat),
-         mysqli_real_escape_string($con, $lng),
-         mysqli_real_escape_string($con, $message));
+         mysqli_real_escape_string($con,$lat),
+         mysqli_real_escape_string($con,$lng),
+     mysqli_real_escape_string($con,$category),
+     mysqli_real_escape_string($con, $date_submitted));
 
 $result = mysqli_query($con,$query);
 
