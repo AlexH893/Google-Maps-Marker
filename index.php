@@ -23,13 +23,15 @@
     <script type="text/javascript" src="js/QuestLogic.js"></script>
     <script type="text/javascript" src="js/ShowText.js"></script>
     <script type="text/javascript" src="js/AddMarker.js"></script>
-   
+    <script type="text/javascript" src="js/SaveLocation.js"></script>
+     <script type="text/javascript" src="js/DownloadUrl.js"></script>
+  
 
 </head>
 
 <body>
     <?php include 'date.php';  ?>
-    <br> Latest update 3/12/2020 - Backend changes, code refactoring/modularizing
+    <br> Latest update 3/13/2020 - Backend changes, code refactoring/modularizing, re-added utility marker function
 
     <div id="map" height="460px" width="100%"></div>
     <div id="form2">
@@ -37,32 +39,17 @@
             <!-- Form for adding a message in a custom marker -->
             <label id="name" style="color: #0026ff"></label>
             <tr>
-                <input type="text" id="name" name="name" placeholder="Enter a message"><br>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type='button' value='Save' onclick='SaveLocation()' /></td>
+                <input type = "text" id= "messageInput" placeholder="Enter marker message"><input type='button' value='Save' onclick='SaveLocation()'/>         
             </tr>
         </table>
+    <p>Use the utility marker feature to temporarily and accurately <br> pinpoint Pokemon spawn, a point of interest, or other location.</p>
     </div>
 
-        <div id="form3">
-        <table>
-            <!-- Form that appears when clicking a custom marker -->
-            <label id="name" style="color: #0026ff"></label>
-            <tr>
-                <input type="text" id="name" name="name" placeholder="Enter a message"><br>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type='button' value='Save' onclick='SaveLocation()' /></td>
-            </tr>
-        </table>
-    </div>
 
     <div id="map-canvas"></div>
     <script>
-               var IsToggled = false;
+        addedMarker = 0;
+
         $(document).ready(function() {
             $("#button2").click("slow", function(event) {
             });
@@ -114,9 +101,8 @@
             }
         };
         var marker;
-        var marker2;        
         var infowindow;
-        var messagewindow;
+        var infowindow2;
         var clickedMarker;
         var hasQuest = false; // Flag to identify which stops have a quest set, default=false
         var oskaloosa = {
@@ -203,14 +189,12 @@
             });
 
             messagewindow = new google.maps.InfoWindow({
-
                 content: document.getElementById('message')
             });
 
 
             // Loading in markers from DB via call.php
             downloadUrl('call.php', function(data) {
-
 
                 var xml = data.responseXML;
                 var markers = xml.documentElement.getElementsByTagName('marker');
@@ -224,8 +208,10 @@
                         parseFloat(markerElem.getAttribute('lng')));
                     var id = markerElem.getAttribute('id');
                     var category = markerElem.getAttribute('category');
+                    var date_updated = markerElem.getAttribute('date_updated'); //this is for pokestop markers
+
                     var date_submitted = markerElem.getAttribute('date_submitted');
-                     var message = markerElem.getAttribute('message');                   
+                   
 
                     var content = '<b>' + name + '</b><br>' + "Time submitted: " + date_submitted + " " + '<br>' + "Current quest:" + " " + '<label id="questTitle">' + questTitle + '</label>' + '<br>' + "Current Reward: " + '<label id="rewardTitle">' + '<b>' + questReward + '</b>' + '<br>' + '<select id="questType" onchange="questLogic()" style="width:100%;max-width:90%;">' +
                         '<option value="null">Select quest</option>' + '<br>' +
@@ -265,7 +251,11 @@
 
                         '<input type="button" value="Set Quest" onClick="saveData();"></button>' + '<br>' + '<select id="rewardType">' + '<br>' + '<input type="text" id="reward" value="Reward" readonly>' + '<br>' + '<input type="button" id="button2" value="Mark checked" onClick="markChecked();">';
 
+                      //user-submitted marker
+                      var content2 = '<b>' + "Utility Marker" + '</b><br>' + name + '<br>' + date_submitted + '<br>' + "<i>This is a user-added marker";
+
                     var icon = customLabel[category] || {};
+
                     var marker = new google.maps.Marker({
                         map: map,
                         position: point,
@@ -273,42 +263,30 @@
                         label: icon.label
                     });
 
-                    // Opening the infowindow upon marker click
+                    // This is going to decide if a pokestop or user-added marker is being clicked
+                    // The infow window will display different content depending on which type of marker is clicked
                     marker.addListener('click', function() {
+                        if(category == "Utility") {
+                            alert("Utility marker");
+                       infowindow.setContent(content2);
+                       infowindow.open(map, marker);
+                        clickedMarker = marker;
+                        } else {
                         infowindow.setContent(content);
                         infowindow.setOptions({
                             maxWidth: 600
                         })
                         infowindow.open(map, marker);
                         clickedMarker = marker;
+                        }
                     });
-
-                    //	google.maps.event.addListener(marker, 'click', function() { // Filter function-WIP
-                    //    if (marker.category == "Chansey" || category.length === 0) {
-                    //		alert("hello");
-                    //		} else {
-                    //		marker.setVisible(false); // maps API hide call 
-                    //		break;
-                    //}
-                    //	});
 
                 });
 
-                // Currently not working - in development
-                filterMarkers = function(category) {
-
-                    for (i = 0; i < markers.length; i++) {
-                        marker = markers[i];
-
-                        markers.setVisible(null);
-                        // If is same category or category not picked
-
-                    }
-                }
-
                 // Add marker to canvas on mouse click - needs to be toggled with button click
                 google.maps.event.addListener(map, 'click', function(event) {
-                    if (IsToggled) {
+                if (addedMarker == 0){
+                                        addedMarker = 1;
                         marker = new google.maps.Marker({
                             position: event.latLng,
                             map: map
@@ -317,7 +295,7 @@
                         marker.addListener('click', function() {
                             infowindow.setContent(form2);
                             infowindow.open(map, marker);
-                        });
+                        }); 
                     }
                 });// End of function
 
@@ -353,44 +331,8 @@
         } // End of geolocation
 
 
-        function downloadUrl(url, callback) {
-            var request = window.ActiveXObject ?
-                new ActiveXObject('Microsoft.XMLHTTP') :
-                new XMLHttpRequest;
-
-            request.onreadystatechange = function() {
-                if (request.readyState == 4) {
-                    request.onreadystatechange = doNothing;
-                    callback(request, request.status);
-                }
-            };
-
-            request.open('GET', url, true);
-            request.send(null);
-        }
-
-function SaveLocation() { //USED FOR ADDING MARKERS TO CANVAS 
-    var latlng = marker.getPosition();
-    var url = 'phpsqlinfo_addrow.php?name=' + name + '&questTitle=' + 'default' + '&lat=' + latlng.lat() + '&lng=' + latlng.lng() + '&message=' + message;
-
-    downloadUrl(url, function(data, responseCode) {
-
-        if (responseCode == 200 && data.length <= 1) {
-            infowindow.close();
-            messagewindow.open(map, marker);
-        }
-    });
-}	  
-
         function doNothing() {}
 
-        //  function bindInfoWindow(marker, map, infoWindow, html) {
-        // google.maps.event.addListener(marker, 'click', function() {
-        // infoWindow.setContent(content);
-        //  infoWindow.open(map, marker);
-        //  });
-
-        //  }
     </script>
 
     <!-- Google Map API Key -->
