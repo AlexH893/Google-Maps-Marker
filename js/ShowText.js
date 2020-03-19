@@ -11,6 +11,8 @@ function showText() {
         'Stack Overflow <br> ' +
         'PokemonGoHub.net <br> ' +
         'The Silph Road <br> ' +
-        'Latlong.net' +
-        '</P></i>';
+        'Latlong.net <br> ' +
+        'This fully crowdsourced map does not in any way utilize Pokemon Gos API or send/receive any data from Niantics game servers. <br> ' +
+        'Currently only works for Oskaloosa, IA.' +
+                '</i> <br>' ;
 }
