@@ -2,29 +2,11 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-     <link rel="stylesheet" type="text/css" href="css/css.css">
-    <title>Osky PokeStop Map</title>
-    <style>
-        /* Set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 90%;
-        width: 97%;
-        border: 5px solid black; 
-        top: 50%;
-        left: 50%;
-        -ms-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-        }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
 
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/styles.css"?<?php echo time(); ?>" />
+    <title>Osky PokeStop Map</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
     <script type="text/javascript" src="js/CenterMap.js"></script>
     <script type="text/javascript" src="js/SaveData.js"></script>
     <script type="text/javascript" src="js/MarkedChecked.js"></script>
@@ -35,29 +17,35 @@
     <script type="text/javascript" src="js/SaveLocation.js"></script>
      <script type="text/javascript" src="js/DownloadUrl.js"></script>
 
-  
 
 </head>
 
 <body>
+<h3>Pokemon Go Map</h3>
+    <div id="announcements">
     <?php include 'date.php';  ?>
-    <br> Latest update 3/20/2020 - Backend & frontend changes, code refactoring/modularizing
+    <br> <p>Latest update: 4/15/2020 - Frontend fixes</p>
 
+    </div>
+<br>
+        <hr></hr>
     <div id="map" height="460px" width="100%"></div>
-    <div id="form2" style="display:none;">
+    <div id="form2" >
         <table>
             <!-- Form for adding a message in a custom marker -->
             <label id="name" style="color: #0026ff"></label>
             <tr>
-                <input type = "text" id= "messageInput" placeholder="Enter marker message"><input type='button' value='Save' onclick='SaveLocation()'/>         
+                <input type = "text" id= "messageInput" placeholder="Enter marker message"><input type='button' value='Save' onclick='SaveLocation()'/>
             </tr>
         </table>
     <p>Use the utility marker feature to temporarily and accurately <br> pinpoint Pokemon spawn, a point of interest, or other location.</p>
     </div>
 
-    <div id="form3">
-        
-    <P>Map Legend: Letters on the markers indicate quest rewards<br>
+
+
+    <div id="map-canvas">
+        <div id="form3">      
+    <p>Map Legend: Letters on the markers indicate quest rewards<br>
         C = Chansey encounter<br>
         M = Machop encounter<br>
         D = Dratini encounter<br>
@@ -70,12 +58,10 @@
         SD = Stardust reward<br>
         UB = Ultra balls reward<br>
     </p>
+    </div>    
     </div>
-
-    <div id="map-canvas"></div>
     <script>
         addedMarker = 1;
-
 
         $(document).ready(function() {
             $("#button2").click("slow", function(event) {
@@ -143,6 +129,7 @@
         {
 
             var styledMapType = new google.maps.StyledMapType(
+
                 [{
                         "featureType": "poi",
                         "elementType": "labels.text",
@@ -185,7 +172,7 @@
                     zoom: 18,
                     streetViewControl: false,
                     mapTypeControlOptions: {
-                        gestureHandling: 'greedy', // Set to cooperative by default once menus are built	  
+                        gestureHandling: 'greedy', // Set to cooperative by default once menus are built      
                         style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
                         mapTypeIds: ['roadmap', 'terrain']
                     }
@@ -239,10 +226,10 @@
                 var xml = data.responseXML;
                 var markers = xml.documentElement.getElementsByTagName('marker');
                 Array.prototype.forEach.call(markers, function(markerElem) {
-                    var name = markerElem.getAttribute('name'); // Name of marker		  
+                    var name = markerElem.getAttribute('name'); // Name of marker         
                     document.getElementById("name").innerHTML = name;
                     var questTitle = markerElem.getAttribute('questTitle'); // Quest of marker
-                    var questReward = markerElem.getAttribute('questReward'); // Reward of marker			  
+                    var questReward = markerElem.getAttribute('questReward'); // Reward of marker             
                     var point = new google.maps.LatLng(
                         parseFloat(markerElem.getAttribute('lat')),
                         parseFloat(markerElem.getAttribute('lng')));
@@ -252,14 +239,13 @@
 
                     var date_submitted = markerElem.getAttribute('date_submitted');
                    
-
                     var content = '<b>' + name + '</b><br>' + "Time submitted: " + date_submitted + " " + '<br>' + "Current quest:" + " " + '<label id="questTitle">' + questTitle + '</label>' + '<br>' + "Current Reward: " + '<label id="rewardTitle">' + '<b>' + questReward + '</b>' + '<br>' + '<select id="questType" onchange="questLogic()" style="width:100%;max-width:90%;">' +
                         '<option value="null">Select quest</option>' + '<br>' +
                         '<option value="HWpooch">Halloween: Catch 5 Poochyena or Houndour</option>' +
                         '<option value="HWdark">Halloween: Catch 5 Dark-type Pokémon</option>' +
                         '<option value="HWghost">Halloween: Catch 10 Ghost-type Pokémon</option>' +
                         '<option value="HWdusk">Halloween: Evolve 3 Duskull or Shuppet</option>' +
-                        '<option value="HWxfer">Halloween: Transfer 10 Pokémon	</option>' +
+                        '<option value="HWxfer">Halloween: Transfer 10 Pokémon  </option>' +
                         '<option value="battle1x">Battle in a gym 1 time</option>' +
                         '<option value="battle5x">Battle in a gym 5 times</option>' +
                         '<option value="questDratini">Catch a Dragon</option>' +
@@ -289,10 +275,13 @@
                         '<option value="win3raid">Win 3 raids</option>' +
                         '<option value="winLvl3Raid">Win a level 3 or higher raid</option>' +
 
-                        '<input type="button" value="Set Quest" onClick="saveData();"></button>' + '<br>' + '<select id="rewardType">' + '<br>' + '<input type="text" id="reward" value="Reward" readonly>' + '<br>' + '<input type="button" id="button2" value="Mark checked" onClick="markChecked();">';
+                '<input type="button" value="Set Quest" onClick="saveData();"></button>' + '<br>' + '<select id="rewardType">' + '<br>' + '<input type="text" id="reward" value="Reward" readonly>' + '<br>' + '<input type="button" id="button2" value="Mark checked" onClick="markChecked();">';         
+                     
 
                       //user-submitted marker
                       var content2 = '<b>' + "Utility Marker" + '</b><br>' + name + '<br>' + date_submitted + '<br>' + "<i>This is a user-added marker";
+
+
 
                     var icon = customLabel[category] || {};
 
@@ -324,6 +313,7 @@
                 });
 
                 // Add marker to canvas on mouse click - needs to be toggled with button click
+                //When you first input marker information
                 google.maps.event.addListener(map, 'click', function(event) {
                 if (addedMarker == 0){
                                         addedMarker = 1;
@@ -333,6 +323,7 @@
                         });
 
                         marker.addListener('click', function() {
+                            $('#form2').show();
                             infowindow.setContent(form2);
                             infowindow.open(map, marker);
                         }); 
@@ -382,5 +373,6 @@
 
         </details>
         </div>
+                <hr></hr>
 </body>
 </html>
