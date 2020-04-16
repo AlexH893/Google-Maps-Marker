@@ -5,9 +5,9 @@ include("connect.php");
 // Check connection
 if ($con->connect_error) 
 	{
-    	die("Connection failed: " . $con->connect_error);
+    	die("Failed to connect to database! " . $con->connect_error);
 	} 
-		else {echo "connection success";
+		else {echo "Connection success!";
 }
 
 $sql = "SELECT name, date_submitted FROM markers order by date_submitted DESC LIMIT 1";
