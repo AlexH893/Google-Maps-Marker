@@ -5,4 +5,3 @@ Certain quests give desireable rewards and this website helps map out which Poke
 The user can also add a marker of there own by clicking a button which will enable marker plotting. Once they place a marker, it will 
 dissapear after 30 minutes. The purpose of this is to highlight a point of interest such as a rare Pokemon, meeting point or something else.
 
-This website is regularly updated and has a small userbase local to Oskaloosa, Iowa.
