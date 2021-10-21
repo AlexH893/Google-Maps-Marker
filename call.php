@@ -36,3 +36,4 @@ while ($row = mysqli_fetch_assoc($result))
 header("Content-type: text/xml");
 echo $dom->saveXML();
 ?>
+

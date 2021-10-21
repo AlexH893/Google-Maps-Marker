@@ -38,5 +38,7 @@
             controlUI2.addEventListener('click', function() {
                 alert("Marker adding enabled - click on map to add a marker");
                 IsToggled = true;
+addedMarker = 0;
+return addedMarker;
             });
         }

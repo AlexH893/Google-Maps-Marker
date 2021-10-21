@@ -20,6 +20,20 @@ if (!$result) {
     echo "failed";
     die("Invalid query: " . mysqli_error($con));
 }
+<?php 
+$con = mysqli_connect("localhost", "root", "lolirl1", "test");
+
+    // sql to delete a record
+    $query = "DELETE FROM markers";
+	    // use exec() because no results are returned
+//    $con->exec($query);
+
+$result = mysqli_query($con,$query);
+    echo "Marker deleted successfully";
+ if (!$result) {
+	echo "failed";
+  die('Invalid query: ' . mysqli_error($con));
+} 
 
 $query2 = "INSERT INTO `markers` (`name`, `lat`, `lng`, `id`, `questTitle`, `questReward`, `category`, `date_submitted`) VALUES
 ('Mahaska County Veteran Memorial', 41.2952, -92.644, 1, NULL, NULL, NULL, NULL),
@@ -103,4 +117,13 @@ if (!$result2) {
     echo "failed";
     die("Invalid query: " . mysqli_error($con));
 }
+?>
+=======
+ 
+$result2 = mysqli_query($con,$query2);
+   echo "DB populated successfully";
+ if (!$result2) {
+	echo "failed";
+  die('Invalid query: ' . mysqli_error($con));
+} 
 ?>
