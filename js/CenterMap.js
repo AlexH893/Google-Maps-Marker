@@ -1,3 +1,10 @@
+/*
+ * Title: CenterMap.js
+ * Author: Alex Haefner
+ * Date: 4 Sep 2021
+ * Description: Adds a control that centers the user's map.
+*/
+
         /**
          * The CenterControl adds a control to the map that recenters the map on
          * Oskaloosa Square.

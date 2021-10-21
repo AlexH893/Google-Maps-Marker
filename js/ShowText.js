@@ -1,3 +1,10 @@
+/*
+ * Title: ShowText.js
+ * Author: Alex Haefner
+ * Date: 4 Sep 2021
+ * Description: Displays a message to the user when a button is clicked.
+*/
+
 function showText() {
     document.getElementById("demo").innerHTML = "<p>FAQ <br><br>" +
         "How do I use this map?<br> <br>" +

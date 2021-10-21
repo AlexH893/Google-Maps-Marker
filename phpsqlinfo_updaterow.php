@@ -1,3 +1,10 @@
+<!---
+ * Title: phpsqlinfo_updaterow.php
+ * Author: Alex Haefner
+ * Date: 4 Sep 2021
+ * Description: PHP file that handles updating information on a map marker.
+ --->
+
 <?php
 require("phpsqlinfo_dbinfo.php");
 include ("call.php");
