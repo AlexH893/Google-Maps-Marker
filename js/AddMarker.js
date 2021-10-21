@@ -1,10 +1,16 @@
+/*
+ * Title: AddMarker.js
+ * Author: Alex Haefner
+ * Date: 4 Sep 2021
+ * Description: Handles adding a marker where a user clicks.
+*/
+
         /**
          * The AddMarker function adds a control to the map that allows the user to add a 
          * marker wherever the user clicks
          * @constructor
          */
-        function AddMarker(controlDiv, map) 
-        {
+        function AddMarker(controlDiv, map) {
             // Set CSS for the control border.
             var controlUI2 = document.createElement('div');
             controlUI2.style.backgroundColor = '#fff';
@@ -31,6 +37,6 @@
             // Setup the click event listeners: toggling marker adding
             controlUI2.addEventListener('click', function() {
                 alert("Marker adding enabled - click on map to add a marker");
-               IsToggled = true;
+                IsToggled = true;
             });
         }

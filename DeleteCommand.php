@@ -1,17 +1,25 @@
-<?php 
+<!---
+ * Title: DeleteCommand.php
+ * Author: Alex Haefner
+ * Date: 4 Sep 2021
+ * Description: Deletes all markers from database and then re-adds them. This is done to clear 
+ * data if issues arise or a clean wipe is needed.
+ --->
+
+ <?php
 $con = mysqli_connect("localhost", "root", "lolirl1", "test");
 
-    // sql to delete a record
-    $query = "DELETE FROM markers";
-	    // use exec() because no results are returned
+// sql to delete a record
+$query = "DELETE FROM markers";
+// use exec() because no results are returned
 //    $con->exec($query);
 
-$result = mysqli_query($con,$query);
-    echo "Marker deleted successfully";
- if (!$result) {
-	echo "failed";
-  die('Invalid query: ' . mysqli_error($con));
-} 
+$result = mysqli_query($con, $query);
+echo "Marker deleted successfully";
+if (!$result) {
+    echo "failed";
+    die("Invalid query: " . mysqli_error($con));
+}
 
 $query2 = "INSERT INTO `markers` (`name`, `lat`, `lng`, `id`, `questTitle`, `questReward`, `category`, `date_submitted`) VALUES
 ('Mahaska County Veteran Memorial', 41.2952, -92.644, 1, NULL, NULL, NULL, NULL),
@@ -22,7 +30,7 @@ $query2 = "INSERT INTO `markers` (`name`, `lat`, `lng`, `id`, `questTitle`, `que
 ('Oskaloosa Public Library', 41.2934, -92.6453, 6, NULL, NULL, NULL, NULL),
 ('Wall Painting', 41.2942, -92.6454, 7, NULL, NULL, NULL, NULL),
 ('Oskaloosa Fire Department', 41.2936, -92.6444, 12, NULL, NULL, NULL, NULL),
-('Elk\'s Lodge #340', 41.2934, -92.6437, 11, NULL, NULL, NULL, NULL),
+('Elk\'s Lodge 340', 41.2934, -92.6437, 11, NULL, NULL, NULL, NULL),
 ('Oskaloosa Municipal Band Mural', 41.2943, -92.644, 13, NULL, NULL, NULL, NULL),
 ('Oskaloosa\'s Original Jail', 41.2952, -92.6428, 14, NULL, NULL, NULL, NULL),
 ('Saint Mary\'s Church', 41.2945, -92.6417, 15, NULL, NULL, NULL, NULL),
@@ -88,11 +96,11 @@ $query2 = "INSERT INTO `markers` (`name`, `lat`, `lng`, `id`, `questTitle`, `que
 ('Kirkville Post Office', 41.1453, -92.5038, 88, '', NULL, NULL, NULL),
 ('Cedar United Methodist Church', 41.2122, -92.5256, 89, NULL, NULL, NULL, NULL),
 ('Cedar Post Office', 41.2128, -92.5246, 90, NULL, NULL, NULL, NULL)";
- 
-$result2 = mysqli_query($con,$query2);
-   echo "DB populated successfully";
- if (!$result2) {
-	echo "failed";
-  die('Invalid query: ' . mysqli_error($con));
-} 
+
+$result2 = mysqli_query($con, $query2);
+echo "DB populated successfully";
+if (!$result2) {
+    echo "failed";
+    die("Invalid query: " . mysqli_error($con));
+}
 ?>
